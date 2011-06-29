@@ -1,0 +1,36 @@
+--------------------------------------------------------------------------------
+| GLYPE PROXY
+--------------------------------------------------------------------------------
+| Release: 1.1
+| Status: Final
+| License: Permission to use this script is granted free of charge subject to
+| the terms displayed at http://www.glype.com/downloads and the LICENSE.txt file.
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+| INSTALL INSTRUCTIONS
+--------------------------------------------------------------------------------
+ Upload the contents of the /upload/ folder to your server. That's it!
+ 
+--------------------------------------------------------------------------------
+| UPGRADE INSTRUCTIONS
+--------------------------------------------------------------------------------
+ 1) Upload the contents of the /upload/ folder to your server. If you wish to keep
+    your existing settings, do NOT overwrite your /includes/settings.php file.
+    All other files must be uploaded and replaced.
+ 2) Update your preserved settings file by using the admin.php tool. Go to the
+    "Edit Settings" page and click "Save Changes" regenerate a new, updated
+    settings file.
+    
+ Upgrading is only possible from earlier 1.x versions. 0.x is incompatible
+ with the 1.x branch.
+ 
+--------------------------------------------------------------------------------
+| CONFIGURATION
+--------------------------------------------------------------------------------
+ Upload the admin.php script from the /extras/ folder to your root proxy folder
+ and run it in your browser.
+ 
+ --------------------------------------------------------------------------------
+| Copyright 2008, http://www.glype.com/
+--------------------------------------------------------------------------------

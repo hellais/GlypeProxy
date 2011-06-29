@@ -1,0 +1,47 @@
+--------------------------------------------------------------------------------
+| GLYPE PROXY PACKAGE CONTENTS
+--------------------------------------------------------------------------------
+
+ This package contains the source code files for the script, a control panel
+ for managing your proxy site and a number of the additional files to help with
+ customizing your proxy.
+
+ /extras/
+   - admin.php
+     | This script provides a user-friendly interface for editing your settings.
+     | Upload it to your root proxy directory and run it in your web browser.
+     | You can then follow the instructions displayed to customize your proxy.
+
+   - cookies.php
+     | This file displays a list of proxified cookies stored on the users computer
+     | and allows the user to delete individual or all cookies.
+
+   - disclaimer.php
+     | This file displays a stock disclaimer to the user.
+   
+   - edit-browser.php
+     | This allows the user to customize the "virtual browser". You can edit the
+     | user agent and referrer, and choose another proxy to tunnel through.
+  
+   - privacy.php
+     | This file displays a stock privacy policy to the user.
+   
+   - terms.php
+     | This file displays a stock terms of use to the user.
+     
+   - full.main.js
+     | An uncompressed version of the proxy javascript. You will only need this if
+     | want to modify the includes/main.js file.
+ 
+ Install: simply copy the file(s) to your root proxy folder. For user-accessible pages,
+          you will need to edit your theme to create links to the extra pages.
+          
+   
+ /upload/
+   - *
+     | The contents of this folder must be uploaded to your server for the proxy to function.
+     | This folder contains all the source code files for the script.
+
+ --------------------------------------------------------------------------------
+| Copyright 2008, http://www.glype.com/
+--------------------------------------------------------------------------------
