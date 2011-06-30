@@ -19,7 +19,7 @@
 
 // Choose error reporting levels
 error_reporting(E_ALL);
-ini_set('display_errors', 0); // Always report but don't display on live installation
+ini_set('display_errors', 1); // Always report but don't display on live installation
 
 // Script name (change this if you rename browse.php)
 define('SCRIPT_NAME', 'browse.php');
@@ -37,6 +37,11 @@ define('SAFE_MODE', ini_get('safe_mode'));
 // Backwards compatiblity is frequently removed so keep up to date! Checking this is
 // ESSENTIAL if you're distributing a theme or plugin.
 define('COMPATABILITY_MODE', true);
+
+$tmp = explode(".",$_SERVER['HTTP_HOST']);
+
+$hostname['onion'] = $tmp[0];
+$hostname['base'] = ".glype.tor.infosecurity.ch";
 
 // Set up paths/urls
 define('GLYPE_ROOT', str_replace('\\', '/', dirname(dirname(__FILE__))));
@@ -384,7 +389,7 @@ if ( ! isset($_SESSION['custom_browser']) ) {
 // will load the resource through our proxy
 function proxifyURL($url, $givenFlag = false) {
 
-   global $CONFIG, $options, $bitfield, $flag;
+   global $CONFIG, $options, $bitfield, $flag, $hostname;
    
    // Remove excess whitespace
    $url = trim($url);
@@ -428,14 +433,40 @@ function proxifyURL($url, $givenFlag = false) {
    // Determine flag to use - $givenFlag is passed into function, $flag
    // is global flag currently in use (used here for persisting the frame state)
    $addFlag = $givenFlag ? $givenFlag : ( $flag == 'frame' ? 'frame' : '' );
-   
+  
+   // It is on the same domain
+   if(preg_match("/".$hostname['onion']."/",$url)) {
+      $glype_browse = GLYPE_BROWSE;
+      if(preg_match('/(?:([a-z0-9-.]+:[a-z0-9-.]+)@)?([a-z0-9-.]+)\.onion(.*)/', $url, $tmp)){
+         return urldecode($tmp[3]);
+      }
+   }
+
+   else {
+      preg_match('/(?:([a-z0-9-.]+:[a-z0-9-.]+)@)?([a-z0-9-.]+)\.onion(.*)/', $url, $tmp);
+
+      // It is an external non tor2web site
+      if(!$tmp){
+        return "/leaving.php?url=".$url;
+      }
+
+      else {
+        $new_onion = $tmp[2];
+      }
+
+      $glype_browse = 'http'
+                    . ( HTTPS ? 's' : '' )
+                    . '://' . $new_onion
+                    . $hostname['base']
+                    . preg_replace('#/(?:(?:includes/)?[^/]*|' . preg_quote(SCRIPT_NAME) . '.*)$#', '', $_SERVER['PHP_SELF']);
+   }
    // Return in path info format (only when encoding is on)
    if ( $CONFIG['path_info_urls'] && $options['encodeURL'] ) {
-      return GLYPE_BROWSE . '/' . str_replace('%', '_', chunk_split($url, 8, '/')) . 'b' . $bitfield . '/' . ( $addFlag ? 'f' . $addFlag : '') . $anchor;
+      return $glype_browse . '/' . str_replace('%', '_', chunk_split($url, 8, '/')) . 'b' . $bitfield . '/' . ( $addFlag ? 'f' . $addFlag : '') . $anchor;
    }
    
    // Otherwise, return in 'normal' (query string) format
-   return GLYPE_BROWSE . '?u=' . $url . '&b=' . $bitfield . ( $addFlag ? '&f=' . $addFlag : '' ) . $anchor;
+   return $glype_browse . '?u=' . $url . '&b=' . $bitfield . ( $addFlag ? '&f=' . $addFlag : '' ) . $anchor;
 
 }
 
@@ -516,7 +547,7 @@ function deproxifyURL($url, $verifyUnique=false) {
 function absoluteURL($input) {
 
 	global $base, $URL;
-
+	$url = '';
 	// Check we have something to work with
 	if ( $input == false ) {
 		return $input;

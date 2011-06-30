@@ -65,7 +65,7 @@ switch ( true ) {
 }
 
 // Validate the URL
-if ( ! preg_match('#^((https?)://(?:([a-z0-9-.]+:[a-z0-9-.]+)@)?([a-z0-9-.]+)(?::([0-9]+))?)(?:/|$)((?:[^?/]*/)*)([^?]*)(?:\?([^\#]*))?(?:\#.*)?$#i', $toLoad, $tmp) ) {
+if ( ! preg_match('#^((https?)://(?:([a-z0-9-.]+:[a-z0-9-.]+)@)?([a-z0-9-.]+)\.onion(?::([0-9]+))?)(?:/|$)((?:[^?/]*/)*)([^?]*)(?:\?([^\#]*))?(?:\#.*)?$#i', $toLoad, $tmp) ) {
 
    // Invalid, show error
    error('invalid_url', $toLoad);
@@ -502,7 +502,7 @@ $toSet[CURLOPT_DNS_CACHE_TIMEOUT] = 600;
 
 // Undocumented in PHP manual (added 5.2.1) but allows uploads to some sites
 // (e.g. imageshack) when without this option, an error occurs. Less efficient
-// so probably best not to set this unless you need it.
+
 #   $toSet[CURLOPT_TCP_NODELAY] = true;
 
 
@@ -517,6 +517,7 @@ $toSet[CURLOPT_DNS_CACHE_TIMEOUT] = 600;
 
 // Language (geotargeting will find the location of the server -
 // forwarding this header can help avoid incorrect localisation)
+ 
 if ( isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ) {
    $toSet[CURLOPT_HTTPHEADER][] = 'Accept-Language: ' . $_SERVER['HTTP_ACCEPT_LANGUAGE'];
 }
@@ -530,7 +531,6 @@ if ( isset($_SERVER['HTTP_ACCEPT']) ) {
 if ( isset($_SERVER['HTTP_ACCEPT_CHARSET']) ) {
    $toSet[CURLOPT_HTTPHEADER][] = 'Accept-Charset: ' . $_SERVER['HTTP_ACCEPT_CHARSET'];
 }
-
 
 /*****************************************************************
 * Browser options
@@ -562,7 +562,23 @@ if ( $flag == 'norefer' ) {
    $flag = '';
 }
 
+// Use Tor for traffic
+
+$toSet[CURLOPT_PROXY]     = "127.0.0.1";
+//$toSet[CURLOPT_PROXYPORT] = 9050;
+//$toSet[CURLOPT_PROXYTYPE] = CURLPROXY_SOCKS5;
+$toSet[CURLOPT_PROXYPORT] = 8118;
+$toSet[CURLOPT_PROXYTYPE] = CURLPROXY_HTTP;
+
+// TEST OPTIONS
+// $toSet[CURLOPT_FOLLOWLOCATION] = 1;
+// $toSet[CURLOPT_HEADER] = 0;
+// $toSet[CURLOPT_RETURNTRANSFER] = 1;
+
+
 // Tunnel through another proxy
+// Disable custom browser feature
+/* 
 if ( $_SESSION['custom_browser']['tunnel'] ) {
 
    $toSet[CURLOPT_PROXY]     = $_SESSION['custom_browser']['tunnel'];
@@ -570,7 +586,7 @@ if ( $_SESSION['custom_browser']['tunnel'] ) {
    $toSet[CURLOPT_PROXYTYPE] = $_SESSION['custom_browser']['tunnel_type'] == 'http' ? CURLPROXY_HTTP : CURLPROXY_SOCKS5;
 
 }
-
+*/
 
 /*****************************************************************
 * Authentication
